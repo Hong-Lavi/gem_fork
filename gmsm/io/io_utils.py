@@ -22,9 +22,7 @@ def _normalize_path(path):
 
 def should_ignore_input_gbk_ec_annotations(run_ns):
     return bool(
-        getattr(run_ns, 'eficaz', False)
-        or getattr(run_ns, 'ec_file', False)
-        or getattr(run_ns, 'eficaz_file', False)
+        getattr(run_ns, 'ec_file', False)
     )
 
 
@@ -100,7 +98,7 @@ def get_target_fasta(io_ns):
 
     if io_ns.targetGenome_locusTag_aaSeq_dict:
         target_fasta_dir = os.path.join(
-                io_ns.outputfolder2, 'targetGenome_locusTag_aaSeq.fa')
+                io_ns.outputfolder1, 'targetGenome_locusTag_aaSeq.fa')
         with open(target_fasta_dir,'w') as f:
             for locusTag in io_ns.targetGenome_locusTag_aaSeq_dict.keys():
                 print('>%s\n%s' \

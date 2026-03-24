@@ -17,9 +17,7 @@ class TestIo_utils:
     
     def test_get_features_from_gbk(self, seq_record, options):
         
-        options.eficaz = False
         options.ec_file = False
-        options.eficaz_file = False
         options.targetGenome_locusTag_aaSeq_dict = {}
         options.targetGenome_locusTag_ec_dict = {}
         options.targetGenome_locusTag_prod_dict = {}
@@ -36,9 +34,7 @@ class TestIo_utils:
 
     def test_get_features_from_gbk_ignores_embedded_ec_with_external_ec_file(self, seq_record, options):
 
-        options.eficaz = False
         options.ec_file = 'external_ec.tsv'
-        options.eficaz_file = False
         options.targetGenome_locusTag_aaSeq_dict = {}
         options.targetGenome_locusTag_ec_dict = {}
         options.targetGenome_locusTag_prod_dict = {}
@@ -72,13 +68,13 @@ class TestIo_utils:
         
         options.targetGenome_locusTag_aaSeq_dict = \
         {'NSK_00003-RB' : 'MRRSLDDLFVPHGTSDLEAGALLYLLRLNAKTKTEVEDWLHQTIPCDLDPSRTISLPIRRDFLSGVQHLHGDL'}
-        options.outputfolder2 = './tmp/2_blastp_results'
-        if not isdir(options.outputfolder2):
-            makedirs(options.outputfolder2)
+        options.outputfolder1 = './tmp/1_blastp_results'
+        if not isdir(options.outputfolder1):
+            makedirs(options.outputfolder1)
             
         io_utils.get_target_fasta(options)
             
-        assert options.target_fasta == './tmp/2_blastp_results/targetGenome_locusTag_aaSeq.fa'
+        assert options.target_fasta == './tmp/1_blastp_results/targetGenome_locusTag_aaSeq.fa'
         
         
     def test_get_temp_fasta(self, options):

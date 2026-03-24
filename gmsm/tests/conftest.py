@@ -125,12 +125,6 @@ def seq_record_antismash5():
 
 
 @pytest.fixture(scope="function")
-def eficaz_file():
-    eficaz_file = join(data_model_dir, 'NSK_all_genomes_ec_test.txt')
-    return eficaz_file
-
-
-@pytest.fixture(scope="function")
 def temp_fasta():
     temp_fasta = join(data_model_dir, 'tempModel_locusTag_aaSeq.fa')
     return temp_fasta
@@ -219,5 +213,4 @@ def locustag_domain_dict():
         'B446_01640': ['oMT_D00'],
         'B446_01660': ['Condensation_LCL_D00', 'AMP-binding_D01', 'PCP_D02']}
     return locustag_domain_dict
-
 

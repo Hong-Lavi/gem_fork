@@ -61,7 +61,7 @@ def add_transport_exchange_rxn_nonprod_monomer(target_model, nonprod_monomer, io
     target_model_temp.add_reactions([rxn])
 
     #Model reloading and overwrtting are necessary for model stability
-    utils.stabilize_model(target_model_temp, io_ns.outputfolder5, nonprod_monomer)
+    utils.stabilize_model(target_model_temp, io_ns.outputfolder4, nonprod_monomer)
 
     return target_model_temp
 
@@ -93,7 +93,7 @@ def check_gapfill_rxn_biomass_effects(target_model, universal_model,
         target_model_gapFilled.add_reactions(
                 [copy.deepcopy(universal_model.reactions.get_by_id(gapfill_rxn))])
 
-        utils.stabilize_model(target_model_gapFilled, io_ns.outputfolder5, '')
+        utils.stabilize_model(target_model_gapFilled, io_ns.outputfolder4, '')
 
         target_exrxnid_flux_dict = utils.get_exrxnid_flux(
                 target_model_gapFilled, io_ns.template_exrxnid_flux_dict)
@@ -108,7 +108,7 @@ def check_gapfill_rxn_biomass_effects(target_model, universal_model,
         if 'F' in exrxn_flux_change_list:
             target_model_gapFilled.remove_reactions([gapfill_rxn])
 
-            utils.stabilize_model(target_model_gapFilled, io_ns.outputfolder5, '')
+            utils.stabilize_model(target_model_gapFilled, io_ns.outputfolder4, '')
 
             logging.debug("Gap-filling reaction causing wrong fluxes: %s"
                             %str(gapfill_rxn))

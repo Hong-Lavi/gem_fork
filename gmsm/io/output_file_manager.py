@@ -78,9 +78,9 @@ def generate_outputs(folder, runtime, run_ns, io_ns, homology_ns, primary_model_
             template_model_gene_list, duplicate_gene_list, run_ns, secondary_model_ns)
     write_structured_outputs(folder, model_summary_dict)
 
-    if '3_primary_metabolic_model'in folder:
+    if '2_primary_metabolic_model'in folder:
         logging.info("'Primary' metabolic model completed")
-    elif '4_complete_model' in folder:
+    elif '3_complete_model' in folder:
         logging.info("'Secondary' metabolic model completed")
 
     if run_ns.pmr_generation and run_ns.debug:
@@ -96,7 +96,7 @@ def _canonical_outputs_for_folder(folder):
 
     for legacy_name, metadata in _CANONICAL_FILE_MAP.items():
         if legacy_name in ('rmc_BGCs_fluxes.txt', 'rmc_metabolites_gapfilling_needed.txt') \
-                and '4_complete_model' not in folder:
+                and '3_complete_model' not in folder:
             continue
         mapping[legacy_name] = metadata
 
@@ -124,7 +124,7 @@ def write_summary_report_json(folder, model_summary_dict):
 
 
 def write_markdown_report(folder, model_summary_dict):
-    model_kind = 'Complete model' if '4_complete_model' in folder else 'Primary model'
+    model_kind = 'Complete model' if '3_complete_model' in folder else 'Primary model'
     key_rows = [
         ('Program version', model_summary_dict['program version']),
         ('Input file', model_summary_dict['input_file']),
@@ -157,7 +157,7 @@ def write_markdown_report(folder, model_summary_dict):
             ('`../0_template_recommendation/template_candidates.tsv`', 'Template ranking that fed the selected template.')
         )
 
-    if '4_complete_model' in folder:
+    if '3_complete_model' in folder:
         recommended_files.extend([
             ('`bgc_fluxes.tsv`', 'Per-BGC export fluxes before any future gap-filling step.'),
             ('`gapfilling_needed.tsv`', 'Metabolites blocking secondary production.')
@@ -223,7 +223,7 @@ def write_manifest(folder, model_summary_dict):
 
     manifest = collections.OrderedDict([
         ('program_version', model_summary_dict['program version']),
-        ('model_kind', 'complete' if '4_complete_model' in folder else 'primary'),
+        ('model_kind', 'complete' if '3_complete_model' in folder else 'primary'),
         ('input_file', model_summary_dict['input_file']),
         ('outputfolder', model_summary_dict['outputfolder']),
         ('files', files)
@@ -246,7 +246,7 @@ def get_model_reactions(folder, primary_model_ns, **kwargs):
     fp3.write('reaction_ID'+'\t'+'reaction_name'+'\t'+'reaction_equation'+'\t'
             +'GPR'+'\t'+'pathway'+'\n')
 
-    if '4_complete_model' in folder:
+    if '3_complete_model' in folder:
         fp4 = open(_outpath(folder, 'rmc_BGCs_fluxes.txt'), 'w')
         fp4.write('reaction_ID'+'\t'+'fluxes without gap-filling reactions'+'\n')
 
@@ -279,7 +279,7 @@ def get_model_reactions(folder, primary_model_ns, **kwargs):
                                             rxn.gene_reaction_rule, rxn.subsystem), file=fp3)
 
         #Secondary metabolite biosynthetic reactions
-        if (re.search('EX_', rxn.id) and re.search('(Region|Cluster)', rxn.id)) and '4_complete_model' in folder:
+        if (re.search('EX_', rxn.id) and re.search('(Region|Cluster)', rxn.id)) and '3_complete_model' in folder:
             num_bgc_rxn+=1
 
             #Calculated flux values are inaccurate without
@@ -307,7 +307,7 @@ def get_model_reactions(folder, primary_model_ns, **kwargs):
     fp2.close()
     fp3.close()
 
-    if '4_complete_model' in folder:
+    if '3_complete_model' in folder:
         fp4.close()
 
     return num_essen_rxn, num_kegg_rxn, num_bgc_rxn
@@ -319,7 +319,7 @@ def get_model_metabolites(folder, cobra_model, secondary_model_ns):
     fp1.write('metabolite_ID'+'\t'+'metabolite_name'+'\t'
             +'formula'+'\t'+'compartment'+'\n')
 
-    if '4_complete_model' in folder:
+    if '3_complete_model' in folder:
         fp2 = open(_outpath(folder, 'rmc_metabolites_gapfilling_needed.txt'), "w")
         fp2.write('metabolite_ID'+'\t'+'reaction_ID'+'\t'+'reaction_name'+'\t'
                 +'reaction_equation'+'\t'+'GPR'+'\t'+'pathway'+'\n')
@@ -329,7 +329,7 @@ def get_model_metabolites(folder, cobra_model, secondary_model_ns):
         print('%s\t%s\t%s\t%s' %(metab.id, metab.name, metab.formula,
                 metab.compartment), file=fp1)
 
-        if '4_complete_model' in folder:
+        if '3_complete_model' in folder:
             #Remove compartment suffix (e.g., '_c') from 'metab.id'
             if metab.id[:-2] in secondary_model_ns.adj_unique_nonprod_monomers_list:
                 logging.debug("Metabolite for gap-filling: %s" %metab.id)
@@ -345,7 +345,7 @@ def get_model_metabolites(folder, cobra_model, secondary_model_ns):
 
     fp1.close()
 
-    if '4_complete_model' in folder:
+    if '3_complete_model' in folder:
         fp2.close()
 
 
@@ -443,10 +443,9 @@ def get_summary_report(folder, cobra_model, runtime,
     model_summary_dict['template_selection_backend']=getattr(run_ns, 'template_selection_backend', None)
     model_summary_dict['template_selection_strategy']=getattr(run_ns, 'template_selection_strategy', None)
     model_summary_dict['template_selection_confidence']=getattr(run_ns, 'template_selection_confidence', None)
-    model_summary_dict['eficaz']=getattr(run_ns, 'eficaz', None)
     model_summary_dict['primary_metabolic_modeling']=getattr(run_ns, 'pmr_generation', None)
     model_summary_dict['secondary_metabolic_modeling']=getattr(run_ns, 'smr_generation', None)
-    model_summary_dict['EC_number_file']=getattr(run_ns, 'ec_file', getattr(run_ns, 'eficaz_file', None))
+    model_summary_dict['EC_number_file']=getattr(run_ns, 'ec_file', None)
     model_summary_dict['compartment_file']=getattr(run_ns, 'comp', None)
     model_summary_dict['log_level']=log_level
     model_summary_dict['program version']='GMSM version %s (%s)'\
@@ -464,7 +463,7 @@ def get_summary_report(folder, cobra_model, runtime,
             len(duplicate_gene_list)
     model_summary_dict['runtime']=runtime2
 
-    if '4_complete_model' in folder:
+    if '3_complete_model' in folder:
         model_summary_dict['number_metabolites_for_gapfilling'] \
             =len(secondary_model_ns.adj_unique_nonprod_monomers_list)
     else:
@@ -482,33 +481,33 @@ def get_summary_report(folder, cobra_model, runtime,
 
 def write_data_for_debug(run_ns, io_ns, homology_ns, primary_model_ns):
 
-    with open(_outpath(io_ns.outputfolder2, 'temp_target_BBH_dict.txt'),'w') as f:
+    with open(_outpath(io_ns.outputfolder1, 'temp_target_BBH_dict.txt'),'w') as f:
         for locustag in homology_ns.temp_target_BBH_dict:
             print('%s\t%s' %(locustag, homology_ns.temp_target_BBH_dict[locustag]), file=f)
 
     try:
-        with open(_outpath(io_ns.outputfolder6, 'mnxr_to_add_list.txt'),'w') as f:
+        with open(_outpath(io_ns.outputfolder5, 'mnxr_to_add_list.txt'),'w') as f:
             for mnxr in primary_model_ns.mnxr_to_add_list:
                 print('%s' %mnxr, file=f)
     except AttributeError as e:
         logging.warning(e)
 
     try:
-        with open(_outpath(io_ns.outputfolder6, 'targetGenome_locusTag_ec_nonBBH_dict.txt'),'w') as f:
+        with open(_outpath(io_ns.outputfolder5, 'targetGenome_locusTag_ec_nonBBH_dict.txt'),'w') as f:
             for rxnid in primary_model_ns.targetGenome_locusTag_ec_nonBBH_dict:
                 print('%s\t%s' %(rxnid, primary_model_ns.targetGenome_locusTag_ec_nonBBH_dict[rxnid]), file=f)
     except AttributeError as e:
         logging.warning(e)
 
     try:
-        with open(_outpath(io_ns.outputfolder6, 'rxnid_info_dict.txt'),'w') as f:
+        with open(_outpath(io_ns.outputfolder5, 'rxnid_info_dict.txt'),'w') as f:
             for rxnid in primary_model_ns.rxnid_info_dict:
                 print('%s\t%s' %(rxnid, primary_model_ns.rxnid_info_dict[rxnid]), file=f)
     except AttributeError as e:
         logging.warning(e)
 
     try:
-        with open(_outpath(io_ns.outputfolder6, 'rxnid_locusTag_dict.txt'),'w') as f:
+        with open(_outpath(io_ns.outputfolder5, 'rxnid_locusTag_dict.txt'),'w') as f:
             for rxnid in primary_model_ns.rxnid_locusTag_dict:
                 print('%s\t%s' %(rxnid, primary_model_ns.rxnid_locusTag_dict[rxnid]), file=f)
     except AttributeError as e:
@@ -516,7 +515,7 @@ def write_data_for_debug(run_ns, io_ns, homology_ns, primary_model_ns):
 
     if run_ns.comp:
         try:
-            with open(_outpath(io_ns.outputfolder6, 'rxn_newComp_fate_dict.txt'),'w') as f:
+            with open(_outpath(io_ns.outputfolder5, 'rxn_newComp_fate_dict.txt'),'w') as f:
                 for rxnid in primary_model_ns.rxn_newComp_fate_dict:
                     print('%s\t%s' %(rxnid, primary_model_ns.rxn_newComp_fate_dict[rxnid]), file=f)
         except AttributeError as e:
@@ -524,5 +523,5 @@ def write_data_for_debug(run_ns, io_ns, homology_ns, primary_model_ns):
 
 
 def remove_tmp_model_files(io_ns):
-    shutil.rmtree(io_ns.outputfolder5)
+    shutil.rmtree(io_ns.outputfolder4)
     logging.info("'tmp_model_files' removed")

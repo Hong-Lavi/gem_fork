@@ -11,13 +11,13 @@ class TestHomology:
     # Streptomyces collinus Tu 365 : target, Streptomyces coelicolor A3(2) : template
     def test_make_blastDB(self, temp_fasta, target_fasta, options, tmp_test_dir):
 
-        options.outputfolder2 = tmp_test_dir
+        options.outputfolder1 = tmp_test_dir
         options.target_fasta = target_fasta
         options.temp_fasta = temp_fasta
         
         blastp_utils.make_blastDB(options)
-        assert isfile('%s/targetBlastDB.dmnd' %options.outputfolder2) == True
-        assert isfile('%s/tempBlastDB.dmnd' %options.outputfolder2) == True
+        assert isfile('%s/targetBlastDB.dmnd' %options.outputfolder1) == True
+        assert isfile('%s/tempBlastDB.dmnd' %options.outputfolder1) == True
     
     
     # Streptomyces collinus Tu 365 : target, Streptomyces coelicolor A3(2) : template    
@@ -75,11 +75,11 @@ class TestHomology:
     # Therefore, test_get_homologs function only checks the availability of get_homologs function
     def test_get_homologs(self, temp_fasta, target_fasta, options, tmp_test_dir):
 
-        options.outputfolder2 = tmp_test_dir
+        options.outputfolder1 = tmp_test_dir
         options.target_fasta = target_fasta
         options.temp_fasta = temp_fasta
         options.targetGenome_locusTag_ec_dict = {'B446_23835':['4.1.1.45', '3.5.2.3']}
         options.targetBBH_list = ['B446_27575']
-        copyfile(target_fasta, join(options.outputfolder2, 'targetGenome_locusTag_aaSeq.fa'))
+        copyfile(target_fasta, join(options.outputfolder1, 'targetGenome_locusTag_aaSeq.fa'))
 
         bidirect_blastp_analysis.get_homologs(options, options)

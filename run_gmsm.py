@@ -185,11 +185,6 @@ def main():
                         default=False,
                         action=('store_true'),
                         help="Run secondary metabolic modeling")
-    group.add_argument('-E', '--EFICAz',
-                        dest='eficaz',
-                        action='store_true',
-                        default=False,
-                        help=argparse.SUPPRESS)
     group.add_argument('-C', '--comp',
                         dest='comp',
                         default=False,
@@ -301,9 +296,9 @@ def main():
                     time.gmtime(time.time() - start))
 
             try:
-                generate_outputs(io_ns.outputfolder3, runtime1, run_ns, io_ns, homology_ns, primary_model_ns, secondary_model_ns, cobra_model = target_model)
+                generate_outputs(io_ns.outputfolder2, runtime1, run_ns, io_ns, homology_ns, primary_model_ns, secondary_model_ns, cobra_model = target_model)
             except:
-                generate_outputs(io_ns.outputfolder3, runtime1, run_ns, io_ns, homology_ns, primary_model_ns, secondary_model_ns, cobra_model = modelPrunedGPR)
+                generate_outputs(io_ns.outputfolder2, runtime1, run_ns, io_ns, homology_ns, primary_model_ns, secondary_model_ns, cobra_model = modelPrunedGPR)
         else:
             logging.warning("Primary metabolic modeling not implemented;")
             logging.warning("No amino acid sequences found in input genome data")
@@ -313,7 +308,7 @@ def main():
         get_target_genome_from_input(filetype, run_ns, io_ns)
 
         model_file = []
-        files = glob.glob(io_ns.outputfolder3 + os.sep + '*.xml')
+        files = glob.glob(io_ns.outputfolder2 + os.sep + '*.xml')
         model_file = [each_file for each_file in files if '.xml' in each_file]
         total_bgc = max(getattr(io_ns, 'total_region', 0), getattr(io_ns, 'total_cluster', 0))
 
@@ -326,7 +321,7 @@ def main():
 
             model_file = os.path.basename(model_file[0])
             target_model = cobra.io.read_sbml_model(
-                           os.path.join(io_ns.outputfolder3, model_file))
+                           os.path.join(io_ns.outputfolder2, model_file))
 
             target_model = run_secondary_modeling(target_model, io_ns, config_ns, secondary_model_ns)
 
@@ -342,7 +337,7 @@ def main():
             runtime2 = time.strftime("Elapsed time %H:%M:%S",
                                      time.gmtime(time.time() - start))
 
-            generate_outputs(io_ns.outputfolder4,
+            generate_outputs(io_ns.outputfolder3,
                              runtime2, run_ns, io_ns, homology_ns, primary_model_ns, secondary_model_ns,
                              #cobra_model_no_gapFilled = target_model_no_gapsFilled,
                              cobra_model = target_model)

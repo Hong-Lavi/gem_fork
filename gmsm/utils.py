@@ -139,8 +139,7 @@ def ensure_modern_cobra_attrs(model):
 
 def check_input_options(run_ns):
     input_file = getattr(run_ns, 'input', None)
-    ec_file = getattr(run_ns, 'ec_file', getattr(run_ns, 'eficaz_file', None))
-    eficaz = getattr(run_ns, 'eficaz', False)
+    ec_file = getattr(run_ns, 'ec_file', None)
     pmr_generation = getattr(run_ns, 'pmr_generation', False)
     smr_generation = getattr(run_ns, 'smr_generation', False)
     comp = getattr(run_ns, 'comp', None)
@@ -151,13 +150,6 @@ def check_input_options(run_ns):
 
     if not input_file:
         logging.warning("Provide input file via ('-i')")
-        sys.exit(1)
-
-    if eficaz:
-        logging.warning(
-                "The EFICAz auto-run option ('-E'/'--EFICAz') has been removed from the supported workflow")
-        logging.warning(
-                "Provide an external EC prediction file via ('-e') and run primary modeling with ('-p')")
         sys.exit(1)
 
     if not ec_file and \

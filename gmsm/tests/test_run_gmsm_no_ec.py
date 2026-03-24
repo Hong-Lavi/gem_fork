@@ -28,7 +28,7 @@ def test_primary_modeling_without_ec_uses_pruned_model(monkeypatch, tmp_test_dir
     monkeypatch.setattr(
         run_gmsm,
         "setup_outputfolders",
-        lambda run_ns, io_ns: setattr(io_ns, "outputfolder3", tmp_test_dir),
+        lambda run_ns, io_ns: setattr(io_ns, "outputfolder2", tmp_test_dir),
     )
     monkeypatch.setattr(run_gmsm.utils, "check_input_options", lambda *args, **kwargs: None)
     monkeypatch.setattr(run_gmsm, "show_input_options", lambda *args, **kwargs: None)

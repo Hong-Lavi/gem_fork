@@ -7,7 +7,7 @@ import logging
 from gmsm import utils
 #from os.path import join, abspath, dirname
 
-__version__ = '0.7.7'
+__version__ = '0.8.0'
 
 
 def check_prereqs(run_ns):
@@ -63,4 +63,3 @@ def check_prereqs(run_ns):
 
     for msg in failure_messages:
         logging.error(msg)
-

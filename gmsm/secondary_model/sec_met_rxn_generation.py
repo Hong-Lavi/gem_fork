@@ -450,7 +450,7 @@ def check_producibility_sec_met(target_model, io_ns, secondary_model_ns):
     #Model reloading and overwrtting are necessary for model stability
     #Without these, model does not produce an accurate prediction
     target_model = utils.stabilize_model(
-            target_model, io_ns.outputfolder5, secondary_model_ns.product)
+            target_model, io_ns.outputfolder4, secondary_model_ns.product)
 
     flux_dist = target_model.optimize()
     logging.debug("Flux: %s" %flux_dist.objective_value)

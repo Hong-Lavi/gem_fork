@@ -3,7 +3,6 @@ import glob
 import logging
 import os
 import pickle
-import re
 from Bio import SeqIO
 from gmsm import utils
 from gmsm.io.io_utils import (
@@ -21,8 +20,8 @@ def make_folder(folder):
 
 
 def setup_outputfolders(run_ns, io_ns):
-    folders = ['0_template_recommendation', '1_EFICAz_results', '2_blastp_results',
-            '3_primary_metabolic_model', '4_complete_model',
+    folders = ['0_template_recommendation', '1_blastp_results',
+            '2_primary_metabolic_model', '3_complete_model',
             'tmp_model_files', 'tmp_data_files']
 
     # Keep "-o test/test" from creating "test/tes", not "test/test"
@@ -34,32 +33,29 @@ def setup_outputfolders(run_ns, io_ns):
         io_ns.outputfolder0 = os.path.join(run_ns.outputfolder, folders[0])
         make_folder(io_ns.outputfolder0)
 
-    if run_ns.eficaz:
-        #'1_EFICAz_results'
+    if run_ns.pmr_generation:
+        #'1_blastp_results'
         io_ns.outputfolder1 = os.path.join(run_ns.outputfolder, folders[1])
         make_folder(io_ns.outputfolder1)
-    if run_ns.pmr_generation:
-        #'2_blastp_results'
+        #'2_primary_metabolic_model'
         io_ns.outputfolder2 = os.path.join(run_ns.outputfolder, folders[2])
         make_folder(io_ns.outputfolder2)
-        #'3_primary_metabolic_model'
-        io_ns.outputfolder3 = os.path.join(run_ns.outputfolder, folders[3])
-        make_folder(io_ns.outputfolder3)
     if run_ns.smr_generation:
-        #'3_primary_metabolic_model'
+        #'2_primary_metabolic_model'
+        io_ns.outputfolder2 = os.path.join(run_ns.outputfolder, folders[2])
+        make_folder(io_ns.outputfolder2)
+        #'3_complete_model'
         io_ns.outputfolder3 = os.path.join(run_ns.outputfolder, folders[3])
         make_folder(io_ns.outputfolder3)
-        #'4_complete_model'
-        io_ns.outputfolder4 = os.path.join(run_ns.outputfolder, folders[4])
-        make_folder(io_ns.outputfolder4)
 
     #'tmp_model_files'
-    io_ns.outputfolder5 = os.path.join(run_ns.outputfolder, folders[5])
-    make_folder(io_ns.outputfolder5)
+    io_ns.outputfolder4 = os.path.join(run_ns.outputfolder, folders[4])
+    make_folder(io_ns.outputfolder4)
 
     #'tmp_data_files'
-    io_ns.outputfolder6 = os.path.join(run_ns.outputfolder, folders[6])
-    make_folder(io_ns.outputfolder6)
+    io_ns.outputfolder5 = os.path.join(run_ns.outputfolder, folders[5])
+    make_folder(io_ns.outputfolder5)
+    io_ns.outputfolder6 = io_ns.outputfolder5
 
 
 def show_input_options(run_ns):
@@ -72,10 +68,9 @@ def show_input_options(run_ns):
     logging.debug("template_recommendation_topk: %s", getattr(run_ns, 'template_topk', None))
     logging.debug("template_genome_bank: %s", getattr(run_ns, 'template_genome_bank', None))
     logging.debug("template_rerank_topn: %s", getattr(run_ns, 'template_rerank_topn', None))
-    logging.debug("eficaz: %s", getattr(run_ns, 'eficaz', None))
     logging.debug("primary_metabolic_modeling: %s", getattr(run_ns, 'pmr_generation', None))
     logging.debug("secondary_metabolic_modeling: %s", getattr(run_ns, 'smr_generation', None))
-    logging.debug("ec_number_file: %s", getattr(run_ns, 'ec_file', getattr(run_ns, 'eficaz_file', None)))
+    logging.debug("ec_number_file: %s", getattr(run_ns, 'ec_file', None))
     logging.debug("compartment_file: %s", getattr(run_ns, 'comp', None))
 
 
@@ -163,37 +158,6 @@ def get_ec_file(run_ns, io_ns):
     logging.debug("len(io_ns.targetGenome_locusTag_ec_dict.keys): %s",
                   len(io_ns.targetGenome_locusTag_ec_dict.keys()))
 
-
-def get_eficaz_file(run_ns, io_ns):
-    logging.info("Reading EFICAz prediction file..")
-
-    with open(run_ns.eficaz_file, 'r') as f:
-        for line in f:
-            line = line.strip()
-            if not line:
-                continue
-
-            parts = [part.strip() for part in line.split(',')]
-            if not parts:
-                continue
-
-            locustag = parts[0]
-            match = re.search(r'(\d+\.\d+\.\d+\.\d+)', line)
-            if not match:
-                continue
-
-            ec_num = match.group(1)
-            if locustag not in io_ns.targetGenome_locusTag_ec_dict:
-                io_ns.targetGenome_locusTag_ec_dict[locustag] = []
-            io_ns.targetGenome_locusTag_ec_dict[locustag].append(ec_num)
-
-            logging.debug(
-                    "Locus tag: %s; EC number with 4 digits: %s", locustag, ec_num)
-
-    logging.debug("len(io_ns.targetGenome_locusTag_ec_dict.keys): %s",
-                  len(io_ns.targetGenome_locusTag_ec_dict.keys()))
-
-
 def get_fasta_files(run_ns, io_ns):
     #Following data are needed only for primary metabolic modeling
     logging.info("Looking for a fasta file of a target genome..")
@@ -268,4 +232,3 @@ def get_locustag_comp_dict(run_ns, io_ns):
 
     logging.debug("len(io_ns.locustag_comp_dict.keys): %s",
                   len(io_ns.locustag_comp_dict.keys()))
-

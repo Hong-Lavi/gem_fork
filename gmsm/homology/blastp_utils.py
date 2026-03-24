@@ -21,20 +21,20 @@ def _get_diamond_executable():
 #Make database files using fasta files
 def make_blastDB(io_ns):
     diamond = _get_diamond_executable()
-    db_dir = os.path.join(io_ns.outputfolder2, "targetBlastDB")
+    db_dir = os.path.join(io_ns.outputfolder1, "targetBlastDB")
     subprocess.call([diamond, "makedb", "--in", io_ns.target_fasta, "-d", db_dir], stderr=subprocess.STDOUT)
     
     #Checks if DB is properly created; otherwise shutdown
-    if os.path.isfile(os.path.join(io_ns.outputfolder2, "targetBlastDB.dmnd")) == False:
+    if os.path.isfile(os.path.join(io_ns.outputfolder1, "targetBlastDB.dmnd")) == False:
         logging.debug("Error in make_blastDB: blast DB not created")
     else:
         logging.debug("targetBlastDB.dmnd created")
         
-    db_dir = os.path.join(io_ns.outputfolder2, "tempBlastDB")
+    db_dir = os.path.join(io_ns.outputfolder1, "tempBlastDB")
     subprocess.call([diamond, "makedb", "--in", io_ns.temp_fasta, "-d", db_dir], stderr=subprocess.STDOUT)
     
     #Checks if DB is properly created; otherwise shutdown
-    if os.path.isfile(os.path.join(io_ns.outputfolder2, "tempBlastDB.dmnd")) == False:
+    if os.path.isfile(os.path.join(io_ns.outputfolder1, "tempBlastDB.dmnd")) == False:
         logging.debug("Error in make_blastDB: blast DB not created")
     else:
         logging.debug("tempBlastDB.dmnd created")

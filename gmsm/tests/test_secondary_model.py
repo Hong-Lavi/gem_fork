@@ -17,7 +17,7 @@ class TestSecondary_model:
         options.temp_loc1 = 0
         options.anti_version = 5
         options.total_region = 32
-        options.outputfolder5 = './tmp'
+        options.outputfolder4 = './tmp'
         model = run_secondary_modeling.run_secondary_modeling(sci_primary_model, options, options, options)
 
         assert 'Region7_nrps_t1pks_bacteriocin' in model.reactions
@@ -29,7 +29,7 @@ class TestSecondary_model:
         options.seq_record_BGC_num_lists = [[seq_record_antismash4, 32]]
         options.anti_version = 4
         options.total_cluster = 32
-        options.outputfolder5 = './tmp'
+        options.outputfolder4 = './tmp'
         model = run_secondary_modeling.run_secondary_modeling(sci_primary_model, options, options, options)
 
         assert 'Cluster7_t1pks_nrps' in model.reactions
@@ -386,7 +386,7 @@ class TestSecondary_model:
         sec_met_rxn_generation.get_region_info_from_seq_record(seq_record_antismash5, options)
         model = sec_met_rxn_generation.add_sec_met_rxn(sci_primary_model, options, options)
 
-        options.outputfolder5 = './tmp'
+        options.outputfolder4 = './tmp'
         model, flux_dist = sec_met_rxn_generation.check_producibility_sec_met(model, options, options)
 
         assert 'Region3_nrps_transat_pks_t1pks' in model.reactions

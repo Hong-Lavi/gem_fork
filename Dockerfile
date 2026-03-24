@@ -2,10 +2,6 @@
 FROM ubuntu:14.04
 MAINTAINER Hyun Uk Kim, Jae Yong Ryu
 
-# Set environment variables
-ENV EFICAz25_PATH="/EFICAz2.5.1/"
-ENV PATH="${PATH}:${EFICAz25_PATH}"
-
 ENV GMSM_PATH="/gmsm/"
 ENV PATH="${PATH}:${GMSM_PATH}"
 
@@ -23,14 +19,8 @@ WORKDIR /gmsm/
 RUN pip install pip --upgrade
 RUN pip install -r requirements.txt
 
-# Set GMSM implementation
-ADD ./EFICAz2.5.1.tar.gz /
-WORKDIR /usr/bin/
-RUN bash "/EFICAz2.5.1/bin/INSTALL"
-RUN sed -i 's/\/usr/$EFICAz25_PATH/g' /usr/bin/eficaz2.5
 VOLUME ["/input", "/output"]
 WORKDIR /gmsm/
-RUN rm /gmsm/EFICAz2.5.1.tar.gz
 RUN chmod +x run_gmsm.py
 
 ENTRYPOINT ["/bin/bash"]

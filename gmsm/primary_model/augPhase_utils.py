@@ -295,7 +295,7 @@ def add_nonBBH_rxn(modelPrunedGPR, io_ns, config_ns, primary_model_ns):
 
         #'add_reaction' requires writing/reloading of the model
         modelPrunedGPR = utils.stabilize_model(
-                modelPrunedGPR, io_ns.outputfolder5, kegg_id)
+                modelPrunedGPR, io_ns.outputfolder4, kegg_id)
 
         rxn = modelPrunedGPR.reactions.get_by_id(kegg_id)
 
@@ -331,7 +331,7 @@ def add_nonBBH_rxn(modelPrunedGPR, io_ns, config_ns, primary_model_ns):
         rxn.subsystem = primary_model_ns.rxnid_info_dict[kegg_id]['PATHWAY']
 
         modelPrunedGPR = utils.stabilize_model(
-                modelPrunedGPR, io_ns.outputfolder5, kegg_id)
+                modelPrunedGPR, io_ns.outputfolder4, kegg_id)
 
         logging.debug("Number of reactions in the model: %s",
                 len(modelPrunedGPR.reactions))
@@ -441,7 +441,7 @@ def create_rxn_newComp(rxn_newComp_list, model, io_ns, primary_model_ns):
                             #'add_reaction' requires writing/reloading of the model
                             model.add_reactions([rxn_newComp])
                             model = utils.stabilize_model(
-                                    model, io_ns.outputfolder5, rxn_newComp.id)
+                                    model, io_ns.outputfolder4, rxn_newComp.id)
                             added_rxn_newComp_list.append(rxn_newComp.id)
 
                             logging.debug(
@@ -474,7 +474,7 @@ def remove_inactive_rxn_newComp(added_rxn_newComp_list, model, io_ns, primary_mo
                                                         reaction_list=rxn_newComp_list2)
 
     model.remove_reactions(primary_model_ns.inactive_rxn_newComp_list)
-    model = utils.stabilize_model(model, io_ns.outputfolder5, '')
+    model = utils.stabilize_model(model, io_ns.outputfolder4, '')
 
     logging.debug("Following reactions with new compartments have been removed from the model as they carry no fluxes: %s", primary_model_ns.inactive_rxn_newComp_list)
 

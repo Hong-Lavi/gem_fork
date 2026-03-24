@@ -23,7 +23,6 @@ class TestInput_file_manager:
         
         options.outputfolder = './tmp'
         options.auto_template = True
-        options.eficaz = True
         options.pmr_generation = True
         options.smr_generation= True
         
@@ -36,6 +35,7 @@ class TestInput_file_manager:
         assert isdir(options.outputfolder4) == True
         assert isdir(options.outputfolder5) == True
         assert isdir(options.outputfolder6) == True
+        assert options.outputfolder6 == options.outputfolder5
         
         shutil.rmtree(options.outputfolder0)
         shutil.rmtree(options.outputfolder1)
@@ -43,7 +43,6 @@ class TestInput_file_manager:
         shutil.rmtree(options.outputfolder3)
         shutil.rmtree(options.outputfolder4)
         shutil.rmtree(options.outputfolder5)
-        shutil.rmtree(options.outputfolder6)
 
     
     # show_input_options function is used for logging, so there is nothing to do assert
@@ -52,10 +51,9 @@ class TestInput_file_manager:
         options.input = ''
         options.outputfolder = ''
         options.orgName = ''
-        options.eficaz = ''
         options.pmr_generation = ''
         options.smr_generation = ''
-        options.eficaz_file = ''
+        options.ec_file = ''
         options.comp = ''
         
         input_file_manager.show_input_options(options)
@@ -77,9 +75,7 @@ class TestInput_file_manager:
     
     def test_get_target_genome_from_input(self, input_fasta, input_genbank, options):
 
-        options.eficaz = False
         options.ec_file = False
-        options.eficaz_file = False
         options.input = input_fasta
         input_file_manager.get_target_genome_from_input('fasta', options, options)
 
@@ -96,9 +92,7 @@ class TestInput_file_manager:
 
     def test_get_target_genome_from_input_ignores_gbk_ec_when_ec_file_is_given(self, input_genbank, options):
 
-        options.eficaz = False
         options.ec_file = 'external_ec.tsv'
-        options.eficaz_file = False
         options.input = input_genbank
 
         input_file_manager.get_target_genome_from_input('genbank', options, options)
@@ -108,16 +102,6 @@ class TestInput_file_manager:
         assert options.targetGenome_locusTag_ec_dict == {}
 
 
-    def test_get_eficaz_file(self, eficaz_file, options):
-
-        options.eficaz_file = eficaz_file
-        options.targetGenome_locusTag_ec_dict = {}
-        input_file_manager.get_eficaz_file(options, options)
-
-        assert len(options.targetGenome_locusTag_ec_dict) == 2
-        assert options.targetGenome_locusTag_ec_dict['NSK_00005-RA'] == ['2.7.1.83']
-
-        
     # get_fasta_files is used to execute functions of io_utils that have test functions, so there is nothing to do assert
     def test_get_fasta_files(self, options):
         
@@ -159,4 +143,3 @@ class TestInput_file_manager:
 
         assert len(options.locustag_comp_dict) == 8
         assert options.locustag_comp_dict['NSK_00004-RA'] == ['h']
-

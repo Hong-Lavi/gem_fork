@@ -27,36 +27,35 @@ class TestOutput_file_manager:
         options.input = 'input/NC_021985.1.final_antismash4.gbk'
         options.outputfolder = 'output'
         options.orgName = 'sco'
-        options.eficaz = False
         options.pmr_generation = True
         options.smr_generation = True
-        options.eficaz_file = False
+        options.ec_file = False
         options.comp = False
         options.adj_unique_nonprod_monomers_list = ['MNXM61686']
-        options.outputfolder2 = './tmp/2_blastp_results'
-        options.outputfolder3 = './tmp/3_primary_metabolic_model'
-        options.outputfolder6 = './tmp/tmp_data_files'
+        options.outputfolder1 = './tmp/1_blastp_results'
+        options.outputfolder2 = './tmp/2_primary_metabolic_model'
+        options.outputfolder5 = './tmp/tmp_data_files'
+        if not isdir(options.outputfolder1):
+            makedirs(options.outputfolder1)
         if not isdir(options.outputfolder2):
             makedirs(options.outputfolder2)
-        if not isdir(options.outputfolder3):
-            makedirs(options.outputfolder3)
-        if not isdir(options.outputfolder6):
-            makedirs(options.outputfolder6)
+        if not isdir(options.outputfolder5):
+            makedirs(options.outputfolder5)
         start = time.time()
         runtime = time.strftime("Elapsed time %H:%M:%S", time.gmtime(time.time() - start))
         
-        output_file_manager.generate_outputs(options.outputfolder3, runtime, options, options, options, options, options, cobra_model = sci_primary_model)
-        assert isfile(join(options.outputfolder3, 'summary_report.json')) == True
-        assert isfile(join(options.outputfolder3, 'report.md')) == True
-        assert isfile(join(options.outputfolder3, 'manifest.json')) == True
-        assert isfile(join(options.outputfolder3, 'reactions.tsv')) == True
+        output_file_manager.generate_outputs(options.outputfolder2, runtime, options, options, options, options, options, cobra_model = sci_primary_model)
+        assert isfile(join(options.outputfolder2, 'summary_report.json')) == True
+        assert isfile(join(options.outputfolder2, 'report.md')) == True
+        assert isfile(join(options.outputfolder2, 'manifest.json')) == True
+        assert isfile(join(options.outputfolder2, 'reactions.tsv')) == True
         
     
     def test_get_model_reactions(self, sci_secondary_model, options):
     
         options.rxnToRemove_dict = {}
         options.rxnToRemove_dict['PAPA160'] = '0'
-        folder = './tmp/4_complete_model'
+        folder = './tmp/3_complete_model'
         if not isdir(folder):
             makedirs(folder)     
         
@@ -70,7 +69,7 @@ class TestOutput_file_manager:
     def test_get_model_metabolites(self, sci_secondary_model, options):
         
         options.adj_unique_nonprod_monomers_list = ['MNXM61686']
-        folder = './tmp/4_complete_model'
+        folder = './tmp/3_complete_model'
         if not isdir(folder):
             makedirs(folder)
         
@@ -102,10 +101,9 @@ class TestOutput_file_manager:
         options.input = 'input/NC_021985.1.final_antismash4.gbk'
         options.outputfolder = 'output'
         options.orgName = 'sco'
-        options.eficaz = False
         options.pmr_generation = True
         options.smr_generation = True
-        options.eficaz_file = False
+        options.ec_file = False
         options.comp = False
         options.adj_unique_nonprod_monomers_list = ['MNXM61686']
         num_essen_rxn = 1
@@ -115,7 +113,7 @@ class TestOutput_file_manager:
         duplicate_gene_list = range(428)
         start = time.time()
         runtime = time.strftime("Elapsed time %H:%M:%S", time.gmtime(time.time() - start)) 
-        folder = './tmp/4_complete_model'
+        folder = './tmp/3_complete_model'
         if not isdir(folder):
             makedirs(folder)
         
@@ -140,30 +138,30 @@ class TestOutput_file_manager:
         options.rxnid_locusTag_dict = {'R00375' : ['SCO1380', 'SCO3541', 'SCO4067', 'SCO2064', 'SCO3878', 'SCO1827']}
         options.comp = False
         options.rxn_newComp_fate_dict = {}
-        options.outputfolder2 = './tmp/2_blastp_results'
-        options.outputfolder6 = './tmp/tmp_data_files'
-        if not isdir(options.outputfolder2):
-            makedirs(options.outputfolder2)
-        if not isdir(options.outputfolder6):
-            makedirs(options.outputfolder6)
+        options.outputfolder1 = './tmp/1_blastp_results'
+        options.outputfolder5 = './tmp/tmp_data_files'
+        if not isdir(options.outputfolder1):
+            makedirs(options.outputfolder1)
+        if not isdir(options.outputfolder5):
+            makedirs(options.outputfolder5)
         
         output_file_manager.write_data_for_debug(options, options, options, options)
         
-        assert isfile(join(options.outputfolder2,'temp_target_BBH_dict.txt')) == True
-        assert isfile(join(options.outputfolder6,'mnxr_to_add_list.txt')) == True
-        assert isfile(join(options.outputfolder6,'targetGenome_locusTag_ec_nonBBH_dict.txt')) == True
-        assert isfile(join(options.outputfolder6,'rxnid_info_dict.txt')) == True
-        assert isfile(join(options.outputfolder6,'rxnid_locusTag_dict.txt')) == True
+        assert isfile(join(options.outputfolder1,'temp_target_BBH_dict.txt')) == True
+        assert isfile(join(options.outputfolder5,'mnxr_to_add_list.txt')) == True
+        assert isfile(join(options.outputfolder5,'targetGenome_locusTag_ec_nonBBH_dict.txt')) == True
+        assert isfile(join(options.outputfolder5,'rxnid_info_dict.txt')) == True
+        assert isfile(join(options.outputfolder5,'rxnid_locusTag_dict.txt')) == True
 
         
     def test_remove_tmp_model_files(self, options):
         
-        options.outputfolder5 = './tmp/tmp_model_files'
-        if not isdir(options.outputfolder5):
-            makedirs(options.outputfolder5)
+        options.outputfolder4 = './tmp/tmp_model_files'
+        if not isdir(options.outputfolder4):
+            makedirs(options.outputfolder4)
             
         output_file_manager.remove_tmp_model_files(options)
         
-        assert isfile(options.outputfolder5) == False
+        assert isfile(options.outputfolder4) == False
         
         
